@@ -43,7 +43,7 @@ var fact informers.SharedInformerFactory
 func InitCache()  {
 	fact= informers.NewSharedInformerFactory(client,0)
 	fact.Core().V1().Pods().Informer().AddEventHandler(&PodHandler{})
-	fact.Core().V1().Events().Informer().AddEventHandler(&EventHandler{})//为了偷懒
+	fact.Core().V1().Events().Informer().AddEventHandler(&EventHandler{})
 	fact.Core().V1().Namespaces().Informer().AddEventHandler(&NameSpaceHandler{})
 	ch:= make(chan struct{})
 	fact.Start(ch)

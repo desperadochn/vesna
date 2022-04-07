@@ -25,7 +25,7 @@ func InitClient() {
 	metricClient=versioned.NewForConfigOrDie(config)
 }
 
-//如不懂，请私人提问
+
 func MergeFlags(cmds ...*cobra.Command){
 	for _,cmd:=range cmds{
 		cfgFlags.AddFlags(cmd.Flags())
