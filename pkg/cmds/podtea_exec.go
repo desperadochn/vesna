@@ -1,4 +1,5 @@
-package lib
+package cmds
+
 
 import (
 	"context"
@@ -6,15 +7,19 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"io"
 	v1 "k8s.io/api/core/v1"
+/*	"k8s.io/client-go/kubernetes"*/
 	"k8s.io/client-go/kubernetes/scheme"
+/*	"k8s.io/client-go/rest"*/
 	"k8s.io/client-go/tools/remotecommand"
 
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
+	"vesna/pkg/utils"
+	"vesna/pkg/cache"
 	"os"
 )
-
+var  Client= cache.InitClient()
 func execPod(ns,pod,container string) remotecommand.Executor {
 	option := &v1.PodExecOptions{
 		Container:container,
@@ -24,7 +29,7 @@ func execPod(ns,pod,container string) remotecommand.Executor {
 		Stderr:  true,
 		TTY:true ,
 	}
-	req := client.CoreV1().RESTClient().Post().Resource("pods").
+	req := Client.CoreV1().RESTClient().Post().Resource("pods").
 		Namespace(ns).
 		Name(pod).
 		SubResource("exec").
@@ -33,9 +38,10 @@ func execPod(ns,pod,container string) remotecommand.Executor {
 			option,
 			scheme.ParameterCodec,
 			)
-	exec,err := remotecommand.NewSPDYExecutor(restConfig,"POST",
+	exec,err := remotecommand.NewSPDYExecutor(cache.RestConfig,"POST",
 		req.URL())
 	if err != nil{
+		fmt.Println(err)
 		panic(err)
 	}
 	return exec
@@ -51,8 +57,8 @@ type execModel struct {
 
 func (m *execModel) Init() tea.Cmd {
 	//这里要根据podName取出 container 列表
-	m.ns=getNameSpace(m.cmd)
-	pod,err:=client.CoreV1().Pods(m.ns).
+	m.ns=utils.GetNameSpace(m.cmd)
+	pod,err:=Client.CoreV1().Pods(m.ns).
 		Get(context.Background(),m.podName,metav1.GetOptions{})
 	if err!=nil{
 		return tea.Quit
@@ -109,7 +115,7 @@ func (m *execModel)View() string {
 	return s
 }
 
-func runteaExec(args []string,cmd *cobra.Command)  {
+func RunteaExec(args []string,cmd *cobra.Command)  {
 	if len(args) == 0 {
 		log.Println("podname is required")
 		return

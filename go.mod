@@ -4,8 +4,10 @@ go 1.17
 
 require (
 	github.com/c-bata/go-prompt v0.2.6
+	github.com/charmbracelet/bubbles v0.10.3
 	github.com/charmbracelet/bubbletea v0.20.0
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/shopspring/decimal v1.3.1
 	github.com/spf13/cobra v1.2.1
 	github.com/tidwall/gjson v1.14.0
 	k8s.io/api v0.23.5
@@ -19,6 +21,8 @@ require (
 require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
+	github.com/atotto/clipboard v0.1.4 // indirect
+	github.com/charmbracelet/lipgloss v0.4.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect

@@ -1,10 +1,14 @@
 package main
 
 import (
-	"vesna/pkg/kp/lib"
+	"vesna/pkg/cmds"
+	"vesna/pkg/utils"
 )
 
 func main()  {
-	defer lib.ResetSTTY()
-	lib.RunCmd()
+/*	defer lib.ResetSTTY()
+	lib.RunCmd()*/
+
+	defer utils.ResetSTTY()
+	cmds.RunCmd()
 }
