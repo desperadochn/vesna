@@ -32,6 +32,19 @@ type NameSpaceHandler struct {
 type NodeHandler struct {
 
 }
+type ReplicaSetsHandler struct {
+
+}
+
+func (this *ReplicaSetsHandler)OnAdd(obj interface{})  {
+
+}
+func (this *ReplicaSetsHandler)OnUpdate(oldObj,newObj interface{})  {
+
+}
+func (this *ReplicaSetsHandler)OnDelete(obj interface{})  {
+
+}
 
 func (this *NodeHandler)OnAdd(obj interface{})  {
 
@@ -62,6 +75,7 @@ func (this *EventHandler)OnDelete(obj interface{})  {
 
 }
 
+
 var  Client= InitClient() //这是 clientset
 var  RestConfig *rest.Config
 var MetricClient *versioned.Clientset
@@ -86,6 +100,7 @@ func InitCache() {
 	Factory.Core().V1().Namespaces().Informer().AddEventHandler(&NameSpaceHandler{})
 	Factory.Core().V1().Events().Informer().AddEventHandler(&EventHandler{})
 	Factory.Core().V1().Nodes().Informer().AddEventHandler(&NodeHandler{})
+	Factory.Apps().V1().ReplicaSets().Informer().AddEventHandler(&ReplicaSetsHandler{})
 	ch:=make(chan struct{})
 	Factory.Start(ch)
 	Factory.WaitForCacheSync(ch)

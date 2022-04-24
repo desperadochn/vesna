@@ -107,7 +107,7 @@ func (m deploymodel)Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m deploymodel) View() string {
-	s := "本课程来自 程序员在囧途(www.jtthink.com) 咨询群：98514334\n按上下键选择要查看POD的内容\n\n"
+	s := "按上下键选择要查看POD的内容\n\n"
 	for i, item := range m.items {
 		selected := " "
 		if m.index == i {
