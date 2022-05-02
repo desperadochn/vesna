@@ -19,6 +19,7 @@ import (
 	"strconv"
 )
 type V1Deployment []*appv1.Deployment
+type V1Node []*corev1.Node
 func(this V1Deployment) Len() int{
 	return len(this)
 }
@@ -123,6 +124,15 @@ func Listpods(ns string) []*corev1.Pod  {
 	sort.Sort(CoreV1Pods(list))
 	return list
 }
+func ListNode() []*corev1.Node {
+	list,err := cache.Factory.Core().V1().Nodes().Lister().List(labels.Everything())
+	if err!=nil{
+		log.Println(err)
+		return nil
+	}
+	sort.Sort(V1Node(list))
+	return list
+}
 func RenderPods(args []string,cmd *cobra.Command)  {
 	podlist:= Listpods(utils.GetNameSpace(cmd))
 	if podlist == nil{
@@ -184,4 +194,55 @@ func getLatestDeployEvent(uid types.UID ,ns string) string   {
 	return ""
 }
 
+func (this V1Node)Len() int {
+	return len(this)
+}
+func (this V1Node)Swap(i,j int)   {
+	this[i],this[j]=this[j],this[i]
+}
+func (this V1Node)Less(i,j int) bool  {
+	return this[i].CreationTimestamp.Time.After(this[j].CreationTimestamp.Time)
+}
+func RenderNodes(args []string,cmd *cobra.Command)  {
+	nodeList:= ListNode()
+	if nodeList==nil{
+		return
+	}
+	table := tablewriter.NewWriter(os.Stdout)
+	//设置头
+	table.SetHeader(utils.NodeHeader(table))
+	for  _,node:= range nodeList{
+		t1 := time.Now()
+		sub:= t1.Sub(node.CreationTimestamp.Time)
+		h:=sub.Hours()
+		nodeRow:=[]string{
+			node.Name,
+			GetNodeConditions(node.Name),
+			node.Labels["kubernetes.io/role"],
+			fmt.Sprintf("%.0fH", h),
+			node.Status.NodeInfo.KubeletVersion,
+		}
+		table.Append(nodeRow)
+	}
+	utils.SetTable(table)
+	table.Render()
+
+}
+func GetNodeConditions(name string) string {
+	var Conditions string
+	node,err:= cache.Factory.Core().V1().Nodes().Lister().Get(name)
+	if err !=nil{
+	}
+	for _, value := range node.Status.Conditions {
+		if value.Type == "Ready"{
+			if value.Status == "True"{
+				Conditions = "Ready"
+			} else {
+				Conditions = "No Ready"
+				
+			}
+		}
+	}
+	return Conditions
+}
 

@@ -45,6 +45,8 @@ func executorCmd(cmd *cobra.Command) func(in string) {
 			utils.SetNameSpace(args,cmd)
 		case "exec":
 	         RunteaExec(args, cmd)
+		case "ListNode":
+			RenderNodes(args,cmd)
 		case "top":
 			utils.GetPodMetric(utils.GetNameSpace(cmd))
 		case "deploy":
@@ -116,6 +118,7 @@ var suggestions = []prompt.Suggest{
 	{"topNode", "显示当前node列表的指标数据"},
 	{"scale", "伸缩副本"},
 	{"getDeploy", "获取deploy详细"},
+	{"ListNode", "list node"},
 }
 var promptCmd= &cobra.Command{
 	Use:          "prompt",

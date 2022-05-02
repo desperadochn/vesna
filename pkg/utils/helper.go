@@ -162,6 +162,10 @@ func DeployHeader(table *tablewriter.Table) []string {
 	return deployHeaders
 
 }
+func NodeHeader(table *tablewriter.Table) []string  {
+	NodeHeaders:=[]string{"name","status","roles","AGE","VERSION"}
+	return NodeHeaders
+}
 var ShowLabels bool
 
 
